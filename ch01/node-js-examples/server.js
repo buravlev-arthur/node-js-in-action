@@ -15,3 +15,7 @@ debugger;
 server.listen(port, () => {
   console.log('Server listening on: http://localhost:%s', port)
 });
+
+server.on('request', () => {
+  console.log('Request was proccesed');
+})
