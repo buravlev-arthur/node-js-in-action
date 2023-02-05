@@ -9,5 +9,10 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "async": "^3.2.4",
+    "htmlparser": "^1.7.7",
+    "request": "^2.88.2"
+  }
 }
