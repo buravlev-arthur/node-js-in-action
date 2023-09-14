@@ -1,0 +1,21 @@
+{
+  "scripts": {
+    "build": "npx gulp",
+    "watch": "npx gulp watch",
+    "help": "npx gulp help"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.22.17",
+    "@babel/preset-env": "^7.22.15",
+    "@babel/preset-react": "^7.22.15",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-cli": "^2.3.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-help-four": "^0.2.3",
+    "gulp-sourcemaps": "^3.0.0",
+    "gulp-watch": "^5.0.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
