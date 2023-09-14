@@ -166,3 +166,99 @@ _Gulp_ подходит больше для добавления в проект
 **Пример использования Gulp для сборки React-проекта**: gulp-example
 
 ## Webpack
+
+_Плагины Webpack_ - управляют процессом сборки: отправляют активы в облако, удалают дубликаты файлов и т.д. Представляют собой экземляры классов, подключаемые
+к Webpack API.
+
+_Загрузчики Webpack_ - преобразуют сами файлы. Например SASS в CSS. Представляют собой функции (преобразуют входной текст в выходной).
+
+Установка:
+
+```bash
+npm i --save-dev webpack webpack-cli
+touch webpack.config.js
+```
+
+Использование:
+
+```bash
+npx webpack --mode=production
+```
+
+### Установка загрузчика Babel для Webpack:
+
+```bash
+npm i --save-dev babel-loader
+npm i --save-dev @babel/core @babel/preset-react @babel/preset-env
+```
+
+```javascript
+// webpack.config.js
+
+module.exports = {
+  // ...
+  rules: [
+    {
+      test: /.jsx?$/,
+      exclude: /node_modules/,
+      use: {
+        loader: "babel-loader",
+        options: {
+          presets: ["@babel/env", "@babel/react"],
+        },
+      },
+    },
+  ],
+};
+```
+
+### dev-сервер Webpack
+
+Установка:
+
+```bash
+npm install --save-dev webpack-dev-server
+```
+
+Конфигурация Webpack:
+
+```javascript
+// webpack.config.js
+
+output: {
+  // ...
+  publicPath: "/assets/",
+},
+
+```
+
+Запуск cервера:
+
+```bash
+npx webpack serve --hot --static dist --port 3000
+```
+
+Необходимо также создать в директории `dist` файл `index.html` с подключением необходимых статик, расположенных в `/assets/`.
+
+### Webpack и CommonJS-модули
+
+Webpack работает с CommonJS-модулями "из коробки". Требуется минимальная конфируция:
+
+```javascript
+// webpack.config.js
+
+module.exports = {
+  entry: "./index.js",
+  output: {
+    path: path.resolve(__dirname, "dist"),
+    filename: "bundle.js",
+  },
+};
+```
+
+Благодаря этому, можно отказаться от подключения библиотек через тег `<script>` и устанавливать пакеты из _npm_ с импортированием их в модули проекта с помощью `require('...')`.
+
+Список загрузчиков webpack: https://webpack.js.org/loaders/
+Список плагинов webpack: https://webpack.js.org/plugins/
+
+**Пример конфигурации webpack**: webpack.config.js
