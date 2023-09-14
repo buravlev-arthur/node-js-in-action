@@ -258,7 +258,7 @@ module.exports = {
 
 Благодаря этому, можно отказаться от подключения библиотек через тег `<script>` и устанавливать пакеты из _npm_ с импортированием их в модули проекта с помощью `require('...')`.
 
-Список загрузчиков webpack: https://webpack.js.org/loaders/
-Список плагинов webpack: https://webpack.js.org/plugins/
+- Список загрузчиков webpack: https://webpack.js.org/loaders/
+- Список плагинов webpack: https://webpack.js.org/plugins/
 
 **Пример конфигурации webpack**: webpack.config.js
