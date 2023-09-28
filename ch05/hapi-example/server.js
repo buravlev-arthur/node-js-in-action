@@ -21,7 +21,7 @@ const initServer = async () => {
   server.route({
     method: "GET",
     path: "/",
-    handler: (request, h) => {
+    handler: (request, handler) => {
       return `<p>It's Root route page</p> \n \
       <p>A static file served by server: <a href="/hello.html">public/hello.html</a> \
       </p>`;

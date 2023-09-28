@@ -1,0 +1,40 @@
+{
+  "name": "product",
+  "plural": "products",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "size": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "cost": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "color": {
+      "type": "string"
+    },
+    "count": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "manufacturer": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
