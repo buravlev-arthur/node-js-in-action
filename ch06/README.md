@@ -77,3 +77,112 @@ app
 ```
 
 **Пример**: ./connect-app
+
+## Express
+
+Глобальная установка CLI-генератора Express-приложений:
+
+```bash
+npm i -g express-generator
+express --help
+```
+
+Генерация и запуск Express-приложения:
+
+```bash
+# флаг "e" - использование EJS-шаблонизатора 
+express -e project-name
+cd project-name
+npm install
+npm start
+```
+
+### Окружение
+
+```bash
+NODE_ENV=production node server.js
+```
+
+```javascript
+const app = require('express')();
+console.log(app.get('env')); // production
+```
+
+Если `NODE_ENV` не задана, то по умолчанию: `development`.
+
+Методы для работы с окружением:
+
+- `app.set()`
+- `app.get()`
+- `app.enable()` и `app.enabled()`
+- `app.disable()` и `app.disabled()` 
+
+Настройка отступов в JSON-ответах:
+
+```javascript
+app.set('json spaces', 2);
+```
+
+### Представления (views)
+
+Два способа визуализации представлений:
+
+- На уровне приложения: `app.render()`
+- На уровне ответа на запрос: `res.render()` (использует первый)
+
+```javascript
+app.get('/', (res, req) => {
+    // будет использован шаблон: /views/index.ejs
+    res.render('index', { name: 'John' });
+});
+```
+
+Настройка каталога для представлений:
+
+```javascript
+// __dirname - каталог, где расположен скрипт
+app.use('views', `${__dirname}/views`);
+```
+
+Настройка препроцессора по умолчанию для шаблонов:
+
+```javascript
+// теперь можно не указывать расширения у представлений
+app.use('view engine', 'pug');
+
+app.get('/', (req, res) => {
+    res.render('index');
+});
+
+app.get('/feed', (req, res) => {
+    // расширение указано, потому что используем другой препроцессор
+    res.render('feed.ejs');
+});
+```
+
+При разработке для удобства можно отключать кэширование шаблонов, чтобы иметь возможность редактировать шаблоны без перезагрузки сервера:
+
+```javascript
+if (app.get('env') === 'development') {
+  app.set('view cache', false);
+}
+```
+
+Представления можно помещать в подкаталоги:
+
+```javascript
+app.render('entries'); // views/entries/index.ejs
+app.render('entries/edit'); // views/entries/edit.ejs
+```
+
+Передача данных представлениям:
+
+```javascript
+// через второй параметр render()
+app.render('index', { data: 'value' });
+
+// через app.locals.settings (в шаблоне: settings.data)
+app.set('data', 'value');
+```
+
+Приоритет: перемменные шаблона, переменные в `render()`, `res.locals`, `app.locals`.
