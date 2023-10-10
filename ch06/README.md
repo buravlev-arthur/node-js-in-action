@@ -244,3 +244,51 @@ app.body('/add', customMiddleware('anyFormFieldName'), (req, res, next) => {
     // ...
 });
 ```
+
+### Инструменты
+
+#### Некоторые команды Redis
+
+```javascript
+const redis = require('redis');
+
+(async () => {
+    const db = redis.createClient();
+    await db.connect();
+
+    // увеличить на 1 числовое значение для ключа 'keyName'
+    const userId = await db.inrc('keyName');
+    // добавить элемент в список c ключом 'keyName'
+    const lengthOfList = await db.lPush('keyName', JSON.stringify(jsonData));
+    // получить всю выборку из списка (второй и третий параметры: от/до)
+    const items = await db.lRange('keyName', 0, -1);
+    // удалить элементы из списка начания с головы
+    const removedItems = await db.lPopCount('keyValue', 10);
+    // установить ключ со значением/обновить значение ключа
+    await db.set('keyName', 'value');
+    // посмотреть значение ключа
+    const value = await db.get('keyName');
+    // создать/обновить хэш-таблицу
+    const countOfAddedFields = await db.hSet('keyName', jsonDataOrObject);
+    // получить всю хэш-таблицу (все поля и значения)
+    const obj = await db.hGetAll('keyName');
+})();
+```
+
+#### bcrypt
+
+Установка в проект:
+
+```bash
+npm i --save bcrypt
+```
+
+Использование:
+
+```javascript
+const password = '123456';
+const salt = await bcrypt.genSalt(12);
+const passwordHash = await bcrypt.hash(password, salt);
+// сохраняем в базе passwordHash и salt
+```
+
