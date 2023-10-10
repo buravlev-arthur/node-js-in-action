@@ -183,6 +183,64 @@ app.render('index', { data: 'value' });
 
 // через app.locals.settings (в шаблоне: settings.data)
 app.set('data', 'value');
+
+// через app.locals (в шаблоне: prop)
+app.locals.prop = 'your data';
+
+// через res.locals (в шаблоне: prop)
+app.get('/', (req, res) => {
+    res.locals.prop = 'your data';
+    res.render( /* ... */ );
+})
 ```
 
 Приоритет: перемменные шаблона, переменные в `render()`, `res.locals`, `app.locals`.
+
+Если в шаблоне используется форма с атрибутом "name" такого вида:
+
+```html
+<input name="post[title]" />
+<input name="post[body]" />
+```
+
+Необходимо в таком случае сконфигурировать парсер тела запроса в Express в режим расширенного разбора:
+
+```javascript
+const express = require('express');
+const app = express();
+app.set(express.urlencoded({ extended: true }));
+```
+
+### Маршрутизация (routes) и Middlewares
+
+Помимо описания логики для отдельно взятого маршрута, можно определять логику/проверку данных в мидлварах сразу для нескольких маршрутов. Для этого:
+
+1. Cоздать директорию: `/middleware` и создать внутри нее модуль с нужным названием;
+2. Экспортировать в модуле мидлвару со следующей структурой:
+```javascript
+// /middleware/index.js
+// пример проверки существования свойства в теле запроса
+
+exports.customMiddleware = (prop) => {
+    return (req, res, next) => {
+        const value = req.body[prop];
+        if (value) {
+            next();
+        } else {
+            console.error(`"${prop}" must be defined`);
+            res.redirect('back');
+        }
+    }
+};
+```
+3. В маршрут передаём данную мидлвару (между путём и обработчиком запроса можно через запятую указать любое количество мидлвар):
+
+```javascript
+// /routes/index.js
+const app = require('express')();
+const { customMiddleware } = require('../middleware');
+
+app.body('/add', customMiddleware('anyFormFieldName'), (req, res, next) => {
+    // ...
+});
+```

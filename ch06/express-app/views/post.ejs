@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%= title %></title>
+        <link rel="stylesheet" href="/stylesheets/style.css" />
+    </head>
+    <body>
+        <% include menu %>
+
+        <h1><%= title %></h1>
+        
+        <p>Заполните форму ниже для добавления нового поста.</p>
+
+        <form action="/post" method="post">
+            <p>
+                <input type="text" name="entry[title]" placeholder="Title" />
+            </p>
+            <p>
+                <textarea name="entry[body]" placeholder="Body"></textarea>
+            </p>
+            <p>
+                <input type="submit" value="Опубликовать пост" />
+            </p>
+        </form>
+    </body>
+</html>

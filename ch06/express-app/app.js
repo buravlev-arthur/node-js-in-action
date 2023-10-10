@@ -4,8 +4,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var postsRouter = require('./routes/posts');
+var entriesRouter = require('./routes/entries');
 
 var app = express();
 
@@ -34,17 +35,19 @@ if (app.get('env') === 'development') {
   app.set('view cache', false);
 }
 
+// передача данных в шаблон через app.locals.settings и app.locals
+app.set('data', 'value'); // <%= settings.data %>
+app.locals.text = 'text'; // <%= text %>
+
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
+app.use('/', entriesRouter);
 app.use('/users', usersRouter);
-
-// передача данных в шаблон через app.locals.settings
-app.set('data', 'value');
+app.use('/post', postsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
