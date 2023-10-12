@@ -264,6 +264,8 @@ const redis = require('redis');
     const items = await db.lRange('keyName', 0, -1);
     // удалить элементы из списка начания с головы
     const removedItems = await db.lPopCount('keyValue', 10);
+    // получить количество элементов в списке
+    const count = await db.lLen('keyValue');
     // установить ключ со значением/обновить значение ключа
     await db.set('keyName', 'value');
     // посмотреть значение ключа
