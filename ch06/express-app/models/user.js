@@ -52,6 +52,14 @@ class User {
         }
     }
 
+    // этот метод будет вызываться автоматически в JSON.stringify(new User({ ...}))
+    toJSON() {
+        return {
+            id: this.id,
+            name: this.name,
+        }
+    }
+
     static async getByName(name, cb) {
         User.getId(name, (err, id) => {
             if (err) {
@@ -84,7 +92,7 @@ class User {
             await db.connect();
             const userData = await db.hGetAll(`user:${id}`);
             await db.disconnect();
-            cb(null, userData);
+            cb(null, new User(userData));
         } catch (err) {
             cb(err);
         }

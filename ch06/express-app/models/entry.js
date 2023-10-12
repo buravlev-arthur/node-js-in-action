@@ -10,29 +10,38 @@ class Entry {
     }
 
     async save(cb) {
-        await db.connect();
-        const entryJSON = JSON.stringify(this);
         try {
+            const entryJSON = JSON.stringify(this);
+            await db.connect();
             // помещает элемент в начало списка с ключом "entries"
             await db.lPush('entries', entryJSON);
+            await db.disconnect();
             cb();
         } catch (err) {
             cb(err);
-        } finally {
-            await db.disconnect();
         }
     }
 
     // к статическим методам нельзя обращаться из экземляров класса
     static async getRange(from, to, cb) {
-        await db.connect();
         try {
+            await db.connect();
             const items = await db.lRange('entries', from, to);
+            await db.disconnect();
             cb(null, items.map((item) => JSON.parse(item)));
         } catch (err) {
             cb(err);
-        } finally {
+        }
+    }
+
+    static async getCount(cb) {
+        try {
+            await db.connect();
+            const count = await db.lLen('entries');
             await db.disconnect();
+            cb(null, count);
+        } catch (err) {
+            cb(err);
         }
     }
 }

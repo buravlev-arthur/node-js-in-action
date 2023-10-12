@@ -7,11 +7,14 @@ const session = require('express-session');
 const messages = require('./middleware/messages');
 const user = require('./middleware/user');
 const authControl = require('./middleware/authControl');
+const apiAuth = require('./middleware/api');
 
-var postsRouter = require('./routes/posts');
+var postsRouter = require('./routes/posts').router;
 const entriesRouter = require('./routes/entries');
 const registerRouter = require('./routes/register');
 const loginRouter = require('./routes/login');
+const userApi = require('./routes/api/user');
+const entryApi = require('./routes/api/entry');
 
 var app = express();
 
@@ -61,6 +64,9 @@ app.use(session({
 
 // подключаем функционал сессионных сообщений
 app.use(messages());
+// проверка имени пользователя и пароля, переданных через BasicAuth
+// применяемая только для запросов с маршрутом /api/...
+app.use('/api', apiAuth());
 // реализуем получение из Redis и сохранение данных пользователя в сессии
 app.use(user());
 // контролируем доступ к маршрутам
@@ -72,6 +78,8 @@ app.use('/', entriesRouter);
 app.use('/post', postsRouter);
 app.use('/register', registerRouter);
 app.use('/', loginRouter);
+app.use('/api/user', userApi);
+app.use('/api', entryApi);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

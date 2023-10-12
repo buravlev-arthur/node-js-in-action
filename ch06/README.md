@@ -341,3 +341,88 @@ app.get('/logout', (req, res, next) => {
     });
 });
 ```
+
+### Аутентификация в REST API
+
+Существует множество способов. Будет рассмотрена "Базовая аутентификация".
+
+Установка пакета:
+
+```bash
+npm i --save basic-auth
+```
+
+Использование:
+
+```javascript
+const auth = require('basic-auth');
+app.use((req, res, next) => {
+    const userData = auth(req);
+    if(!userData) {
+        return res.sendStatus(401);
+    }
+    const { name, pass } = userData;
+    // что-то делаем с переданными name и pass
+    next(); 
+})
+```
+
+Передача данных пользователей в cURL:
+
+```bash
+curl http://username:password@localhost:3000/user/1 -v
+```
+
+### Метод toJSON()
+
+В классе (модели) можно определить метод **toJSON()**. Он будет автоматически использоваться вызовами: **JSON.stringify()** и **res.json()**:
+
+```javascript
+class ClassName {
+    // ...
+    toJSON() {
+        return {
+            id: this.id,
+            name: this.name,
+        }
+    }
+}
+
+// где-то в обработке запроса
+const entityOfClassName = new ClassName();
+res.json(entityOfClassName);
+```
+
+### Согласование контента
+
+Предпочитаемый формат получаемых данных клиент передаёт в заголовке `Accept`:
+
+```HTTP
+Accept: text/plain; q=0.5, text/html
+```
+
+В этом примере клиент говорит, что готов принять обычный текст, но на 50% предпочительней HTML.
+
+В _Express_ данные заголовка в виде нормализованного массива можно получить в свойстве: `req.accepts()`. С помощью метода `res.format()` можно перечислить ответы для разных типов контента:
+
+```javascript
+res.format({
+    json: () => {
+        res.json(jsonData);
+    },
+    xml: () => {
+        res.write(`<data>${jsonData.anyProp}`);
+        res.end('</data>');
+    }
+});
+```
+
+Вывод xml, html и подобных форматов лучше рендерить из шаблонов представлений:
+
+```javascript
+res.format({
+    xml: () => {
+        res.render('data/xml', { data });
+    }
+});
+```
