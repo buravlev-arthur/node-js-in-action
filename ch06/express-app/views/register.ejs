@@ -1,0 +1,28 @@
+<% include head %>
+
+<h1><%= title %></h1>
+
+<div class="card my-4">
+    <div class="card-body">
+        <p class="text-secondary">Заполните форму ниже для регистрации нового пользователя:</p>
+
+        <% include messages %>
+
+        <form action="/register" method="post">
+            <div class="mb-3">
+                <input class="form-control" type="text" name="user[name]" placeholder="Имя пользователя" />
+            </div>
+            <div class="mb-3">
+                <input class="form-control" type="password" name="user[password]" placeholder="Пароль" />
+            </div>
+            <div class="mb-3">
+                <input class="form-control" type="password" name="user[confirm]" placeholder="Повторите пароль" />
+            </div>
+            <div class="mb-3">
+                <input class="btn btn-primary" type="submit" value="Регистрация" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<% include footer %>

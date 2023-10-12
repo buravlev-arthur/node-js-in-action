@@ -3,10 +3,15 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const session = require('express-session');
+const messages = require('./middleware/messages');
+const user = require('./middleware/user');
+const authControl = require('./middleware/authControl');
 
-var usersRouter = require('./routes/users');
 var postsRouter = require('./routes/posts');
-var entriesRouter = require('./routes/entries');
+const entriesRouter = require('./routes/entries');
+const registerRouter = require('./routes/register');
+const loginRouter = require('./routes/login');
 
 var app = express();
 
@@ -43,11 +48,30 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+// конфигурация сессии
+app.use(session({
+  // Применяется для подписи cookie: Session ID
+  secret: process.env.SESSION_SECRET,
+  // запрет на пересохранение сессии в хранилище, даже если не было изменений
+  resave: false,
+  // запрет на сохранение новой сессии/сессии без изменений в хранилище
+  saveUninitialized: true,  
+}));
+
+// подключаем функционал сессионных сообщений
+app.use(messages());
+// реализуем получение из Redis и сохранение данных пользователя в сессии
+app.use(user());
+// контролируем доступ к маршрутам
+app.use(authControl());
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', entriesRouter);
-app.use('/users', usersRouter);
 app.use('/post', postsRouter);
+app.use('/register', registerRouter);
+app.use('/', loginRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

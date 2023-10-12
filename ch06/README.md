@@ -292,3 +292,52 @@ const passwordHash = await bcrypt.hash(password, salt);
 // сохраняем в базе passwordHash и salt
 ```
 
+### Работа с сеансами
+
+_PRG (Post/Redirect/Get)_ - паттерн проектирования в веб-приложениях. Пользователь отправляет форму POST-запросом и перенаправляется на другую страницу (GET-запрос).
+
+Установка мидлвары:
+
+```bash
+npm i --save express-session
+```
+
+Минимальная конфигурация (после конфигурации Cookie):
+
+```javascript
+// конфигурация сессии
+app.use(session({
+  // Применяется для подписи cookie: Session ID
+  secret: process.env.SESSION_SECRET,
+  // запрет на пересохранение сессии в хранилище, даже если не было изменений
+  resave: false,
+  // запрет на сохранение новой сессии/сессии без изменений в хранилище
+  saveUninitialized: true,  
+}));
+```
+
+Пример с использованием сессий в мидлваре:
+
+```javascript
+app.use((req, res, next) => {
+    req.session.messages = [];
+    req.session.messages.push({ text: 'text', type: 'info' });
+    req session.removeMessages = () => {
+        req.session.messages = [];
+    };
+    next();
+});
+```
+
+Удаление сессии (с созданием новой):
+
+```javascript
+app.get('/logout', (req, res, next) => {
+    req.session.destroy((err) => {
+        if (err) {
+            return next(err);
+        }
+        res.redirect('/');
+    });
+});
+```

@@ -13,8 +13,8 @@ router.post(
     lengthAbove("entry[title]", 4),
     (req, res, next) => {
         const data = req.body.entry;
-        const username = res.locals?.user?.username ?? null;
-        const entry = new Entry({ ...data, username });
+        const { name } = res.locals.user;
+        const entry = new Entry({ ...data, name });
         entry.save((err) => {
             if (err) {
                 return next(err);

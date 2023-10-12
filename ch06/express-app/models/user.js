@@ -53,20 +53,29 @@ class User {
     }
 
     static async getByName(name, cb) {
-        const id = await User.getId(name, cb);
-        const userData = await User.getDataById(id, cb);
-        cb(null, new User(userData));
+        User.getId(name, (err, id) => {
+            if (err) {
+                cb(err);
+            }
+
+            User.getDataById(id, (err, userData) => {
+                if (err) {
+                    cb(err);
+                }
+
+                cb(null, new User(userData));
+            })
+        });
     }
 
     static async getId(name, cb) {
         try {
             await db.connect();
             const id = await db.get(`user:id:${name}`);
-            return id;
+            await db.disconnect();
+            cb(null, id);
         } catch (err) {
             cb(err);
-        } finally {
-            await db.disconnect();
         }
     }
 
@@ -74,11 +83,10 @@ class User {
         try {
             await db.connect();
             const userData = await db.hGetAll(`user:${id}`);
-            return userData;
+            await db.disconnect();
+            cb(null, userData);
         } catch (err) {
             cb(err);
-        } finally {
-            await db.disconnect();
         }
     }
 

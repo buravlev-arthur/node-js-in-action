@@ -1,1 +1,14 @@
-<p>Здесь будет меню</p>
+<div class="card my-4">
+    <div class="card-body">
+        <nav class="nav">
+            <% if (locals.user) { %>
+                <a class="nav-link disabled" aria-disabled="true"><%= user.name %></a>
+                <a class="nav-link" href="/post">Добавить пост</a>
+                <a class="nav-link" href="/logout">Выйти</a>
+            <% } else { %>
+                <a class="nav-link" href="/login">Вход</a>
+                <a class="nav-link" href="/register">Регистрация</a>
+            <% } %>
+        </nav>
+    </div>
+</div>

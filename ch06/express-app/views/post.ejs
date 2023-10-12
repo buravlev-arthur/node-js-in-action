@@ -1,26 +1,23 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title><%= title %></title>
-        <link rel="stylesheet" href="/stylesheets/style.css" />
-    </head>
-    <body>
-        <% include menu %>
+<% include head %>
 
-        <h1><%= title %></h1>
-        
-        <p>Заполните форму ниже для добавления нового поста.</p>
+<h1><%= title %></h1>
+
+<div class="card my-4">
+    <div class="card-body">
+        <p class="text-secondary">Заполните форму ниже для добавления нового поста.</p>
 
         <form action="/post" method="post">
-            <p>
-                <input type="text" name="entry[title]" placeholder="Title" />
-            </p>
-            <p>
-                <textarea name="entry[body]" placeholder="Body"></textarea>
-            </p>
-            <p>
-                <input type="submit" value="Опубликовать пост" />
-            </p>
+            <div class="mb-3">
+                <input class="form-control" type="text" name="entry[title]" placeholder="Title" />
+            </div>
+            <div class="mb-3">
+                <textarea class="form-control" rows="6" name="entry[body]" placeholder="Body"></textarea>
+            </div>
+            <div class="mb-3">
+                <input class="btn btn-primary" type="submit" value="Опубликовать пост" />
+            </div>
         </form>
-    </body>
-</html>
+    </div>
+</div>
+
+<% include footer %>

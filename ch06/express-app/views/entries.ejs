@@ -1,19 +1,14 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title><%= title %></title>
-        <link rel="stylesheet" href="/stylesheets/style.css" />
-    </head>
-    <body>
-        <% include menu %>
+<% include head %>
 
-        <h1><%= title %></h1>
+<h1><%= title %></h1>
+<% entries.forEach((entry) => { %>
+    <div class="card my-4">
+        <div class="card-body">
+            <h5 class="card-title"><%= entry.title %></h5>
+            <h6 class="card-subtitle mb-4 text-secondary">Автор: <%= entry.name %></h6>
+            <p class="card-text"><%= entry.body %></p>
+        </div>
+    </div>
+<% }) %>
 
-        <% entries.forEach((entry) => { %>
-            <div class="entry">
-                <h3><%= entry.title %></h3>
-                <p><%= entry.body %></p>
-                <p>Автор: <%= entry.username %></p>
-            </div>
-        <% }) %>
-</html>
+<% include footer %>
