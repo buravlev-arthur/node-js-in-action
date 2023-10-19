@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="./src/ejs.js"></script>
+        <script src="./src/jquery.js"></script>
+    </head>
+    <body>
+        <div id="output"></div>
+        <script>
+            const template = "<p>Message: <%= message %></p>"
+            const context = { message: 'Hello template!' };
+            $('#output').append(
+                ejs.render(template, context)
+            );
+        </script>
+    </body>
+</html>

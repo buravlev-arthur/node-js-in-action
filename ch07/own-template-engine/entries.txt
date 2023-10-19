@@ -1,0 +1,7 @@
+title: First article title
+date: January 16, 2023
+It's a text of the first article
+---
+title: Second article title
+date: January 24, 2023
+It's a text of the second article
