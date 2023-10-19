@@ -12,6 +12,12 @@
 
 _EJS (Embedded JavaScript)_ - шаблонизатор, близкий по концепции к Smarty (PHP), JSP (Java), ERB (Ruby) и т.п. 
 
+Установка
+
+```bash
+npm i --save ejs
+```
+
 Данные, передаваемые шаблону называеются _контекстом_:
 
 ```javascript
@@ -46,3 +52,114 @@ ejs.render(template, { /* context data */ }, {
 Пример использования EJS на стороне сервера: `./ejs-project/app.js`
 
 Пример использования EJS на стороне клиента: `./ejs-prject/ejs-on-client-side/index.html`
+
+## Hogan
+
+_Hogan_, разработанный в Twitter, представляет одну из реализаций шаблонизатора _Mustache_, разработанного в GitHub. Предлагает минималистичный подход к шаблонизации.
+
+Установка:
+
+```javascript
+npm i --save hogan.js
+```
+
+Вывод обзаца с заданной строкой:
+
+```javascript
+const hogan = require('hogan.js');
+const context = { message: 'It is hogan template!' };
+const template = hogan.compile('<p>{{ message }}</p>');
+console.log(template.render(context));
+```
+
+Неэкранированный вывод: `{{{ message }}}` или `{{& message }}`
+
+Комментарий: `{{! This is  comment }}`
+
+Секции (перечисления):
+
+```javascript
+const context = {
+    users: [
+        { name: 'John', age: 23 },
+        { name: 'Elisabeth', age: 19 },
+    ],
+};
+
+const template = hogan.compile(`
+    {{#users}}
+        <p>Name: {{name}}; Age: {{age}}</p>
+    {{/users}}
+`);
+
+console.log(template.render(context));
+```
+
+Инвертированная секция (сообщение при отсутствии данных):
+
+```javascript
+const context = `
+    {{^users}}
+        <p>Нет данных!</p>
+    {{/users}}
+`;
+```
+
+Лямбда-секции позволяет расширять функционал шаблонизатора. Например, преобразовывать markdown-разметку в html-шаблон:
+
+```bash
+npm i -D marked
+```
+
+```javascript
+const hogan = require('hogan');
+const marked = require('marked');
+
+const context = {
+    text: 'Текст заголовка',
+    markdown: () => (text) => marked.parse(text),
+};
+
+const template = hogan.compile(`
+    {{#markdown}}
+    # **Заголовок**: {{ text }} 
+    {{/markdown}}
+`);
+
+// <h1><strong>Заголовок</strong>: Текст заголовка</h1>
+console.log(template.render(context));
+```
+
+Компоненты (partials):
+
+```javascript
+const hogan = require('hogan');
+
+const context = {
+    users: [
+        { name: 'John', age: 22 },
+        { name: 'Elisabeth', 31 },
+    ],
+};
+
+const partial = hogan.comlile('<p>{{name}}, {{age}} years old</p>');
+const mainTemplate = `
+    {{#users}}
+    {{>users}}
+    {{/users}}
+`;
+
+console.log(mainTemplate(context, { users: partial }));
+```
+
+Настройки Hogan (изменение разделителей на EJS-стиль):
+
+```javascript
+const hogan = require('hogan');
+const template = hogan('<p><% value %></p>', {
+    delimiters: '<% %>',
+});
+console.log(template.render({ value: 'text' }));
+```
+
+Пример использования Hogan: `./hogan-snippet/index.js`

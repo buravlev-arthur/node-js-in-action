@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "hogan.js": "^3.0.2"
+  },
+  "devDependencies": {
+    "marked": "^9.1.2"
+  }
+}
