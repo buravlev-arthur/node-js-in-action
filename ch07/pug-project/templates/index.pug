@@ -1,0 +1,31 @@
+.container
+    a(href = url) #{text}
+
+    - count = 0
+    p= `Count: ${count}`
+
+    //- Обход массива
+    each user in users
+        p= `${user.name}, ${user.age} years old`
+
+    //- Обход объекта
+    each value, key in users[0]
+        strong= key
+        p= value
+    
+    - n = Math.round(Math.random() * 1) + 1
+    if n == 1
+        p Знаение равно 1
+
+    unless n == 1
+        p Значение не равно 1
+
+    //- конструкция "case"
+    case users.length 
+        when 0
+            p Нет пользователей
+        when 1
+            p= `${users[0].name}, ${users[0].age} years old`
+        default 
+            each user in users
+                p= `${user.name}, ${user.age} years old`

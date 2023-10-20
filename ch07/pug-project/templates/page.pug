@@ -1,0 +1,11 @@
+extends layout 
+block scripts 
+    - currentjQueryPath = '3.7.1/jquery.min.js'
+    script(src=`${baseUrl}/${currentjQueryPath}`)
+block title 
+    title Messages
+block content
+    each message in messages 
+        p= message
+    include mixin
+    +list_of_users(users, 'name')
