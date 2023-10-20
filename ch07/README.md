@@ -163,3 +163,201 @@ console.log(template.render({ value: 'text' }));
 ```
 
 Пример использования Hogan: `./hogan-snippet/index.js`
+
+## Pug
+
+Ранее известный как _Jade_. В синтаксисе используются содержательные пробельные символы (отступы) для определения уровня вложенности. Отсутствуют закрывающие теги. Поддерживает примеси (mixins) и наследование.
+
+Установка Pug:
+
+```bash
+npm i --save pug
+```
+
+Пример синтаксиса:
+
+```pug
+//- <div class="classname" id="idname"></div>
+.classname#idname
+    //- Многострочное определение контента внутри тегов
+    style
+        p {
+            padding-left: 20px;
+            margin: 12px 0px;
+        }
+    p
+        | Длинный текст обзаца,
+        | разделеннный на несколько строк
+        | c применением "|", т.к. в отличии от
+        | тега style (выше), тег "p" может иметь 
+        | дочерние теги
+    
+    strong А это способ записи короткого контента
+    
+    //- атрибуты тегов
+    form(
+        method="POST"
+        action="/"
+    )
+        select
+            option( value="Tomato" ) Tomato
+            option( value="Cucumber" ) Cucumber
+    
+    //- блочное расширение (вложенность с помощью ":")
+    ul
+        li: a(href="/") Home page
+        li: a(href="/contacts") Contacts
+```
+
+Включение данных в шаблон:
+
+```javascript
+const pug = require('pug');
+const context = {
+    url: 'https://google.com',
+    text: 'to Google',
+};
+const template = 'a(href = url) #{text}';
+const parse = pug.compile(template);
+console.log(parse(context));
+```
+
+Считывание шаблона Pug из файла:
+
+```javascript
+const pug = require('pug');
+const fs = require('fs');
+const template = fs.readFileSync('./templates/index.pug');
+```
+
+Переменные:
+
+```pug
+- var count = 0
+- count = 0
+
+// с экранированным выводом значения в шаблон
+= count = 0
+// вывод неэкранированного значения в шаблон
+!= count = 0
+```
+
+Сокращенный вывод значения:
+
+```pug
+- count = 0
+// оба варианта эквиваленты
+p Count: #{count}
+p= `Count: ${count}`
+```
+
+Перебор объектов и массивов:
+
+```pug
+//- Обход массива
+each user in users
+    p= `${user.name}, ${user.age} years old` 
+   
+//- Обход объекта
+each value, key in users[0]
+    strong= key
+    p= value
+```
+
+Условная визуализация:
+
+```pug
+- n = Math.round(Math.random() * 1) + 1
+if n == 1
+    p Знаение равно 1
+
+//- if (n !== 1)
+unless n == 1
+    p Значение не равно 1
+```
+
+Конструкция "case":
+
+```pug
+case users.length 
+    when 0
+        p Нет пользователей
+    when 1
+        p= `${users[0].name}, ${users[0].age} years old`
+    default 
+        each user in users
+            p= `${user.name}, ${user.age} years old`
+```
+
+Наследование:
+
+```pug
+//- layout.pug
+html
+    head
+        - baseUrl = "http://google.com"
+        block scripts
+        block title
+    body
+        block content
+```
+
+```pug
+//- page.pug
+extends layout
+block scripts
+    - searchStr = 'search'
+    script(src=`${baseUrl}/?search=${searchStr}`)
+block title
+    title Title
+block content
+    p Some content
+```
+
+```javascript
+// для компиляции include/extends нужен параметр filename
+const filename = './page.pug';
+const template = pug.compile(fs.readFileSync(filename), { filename });
+```
+
+Включения шаблонов:
+
+```pug
+//- layout.pug
+html
+    include head
+    include body.html
+```
+
+```pug
+//- head.pug
+head
+    title Title of a page
+```
+
+```html
+<!-- body.html -->
+<body>
+    <p>Content</p>
+</body>
+```
+
+Миксины
+
+```javascript
+const context = {
+    user: { name: 'John', age: 32, mail: 'test@test.com' }
+};
+```
+
+```pug
+//- mixins.pug
+mixin display_object_prop(object, prop)
+    p= object[prop]
+```
+
+```pug
+//- page.pug
+include mixins
++display_object_prop(user, 'name')
+```
