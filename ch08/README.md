@@ -75,3 +75,57 @@ db.connect((err, client) => {
     db.end(); // закрытие подключения
 })
 ```
+
+`\dt` - просмотр всех таблиц
+
+Создание таблицы:
+
+```javascript
+// SERIAL - числовой тип данных, по-умолчанию
+// присваивающий вместо null следующее число
+db.query(`
+    CREATE TABLE IF NOT EXISTS table-name (
+        id SERIAL,
+        PRIMARY KEY(id),
+        body TEXT
+    );
+`, (err, result) => { /* ... */ });
+```
+
+Добавление записи c добавлением id в результат:
+
+```javascript
+db.query(`
+    INSERT INTO table-name (row) VALUES ('value')
+    RETURNING id
+`, (err, result) => {
+    if (err) throw err;
+    const [{ id }] = result.rows;
+    console.log('Created row with id:', id);
+});
+```
+
+Обновление полей в записи:
+
+```javascript
+const id = 0;
+db.query(`
+    UPDATE table-name SET column-name = 'new_value'
+    WHERE id=${id};
+`, (err, result) => {
+    if (err) throw err;
+    console.log('Updated rows count:', result.rowCount);
+});
+```
+
+Выборка данных из таблицы, упорядоченных по полю id:
+
+```javascript
+db.query(
+    'SELECT * FROM table_name ORDER BY id;',
+    (err, result) => {
+        if (err) throw err;
+        console.log(result.rows); // массив с записями
+    }
+)
+```
