@@ -129,3 +129,89 @@ db.query(
     }
 )
 ```
+
+`TABLE table_name;` - просмотр всех записей в таблице
+`\d table_name;` - просмотр структуры таблицы
+
+
+### Knex
+
+Установка:
+
+```bash
+npm i --save knex
+# Дополнительно нужны драйвера используемых баз данных
+# Например: Sqlite и Postgress
+npm i --save sqlite3 pg
+```
+
+Подключение и использование Knex
+```javascript
+const knex = require('knex');
+
+// пример подключения Sqlite
+const db = knex({
+    client: 'sqlite3',
+    connection: {
+        filename: 'db.sqlite' // или :memory: для хранения данных в ОЗУ
+    }
+});
+
+// пример подключения к Postgress
+const db = knex({
+    client: 'pg',
+    connection: {
+        database: 'articles',
+        username: 'username',
+        password: 'password'
+    }
+});
+
+// создание таблицы
+const createTable = async () => {
+    const tableIsExists = await db.schema.hasTable('articles');
+    if (!tableIsExists) {
+        await db.schema.createTable('articles', (table) => {
+            table.increments('id').primary();
+            table.string('title');
+            table.text('content');
+        });
+    }
+};
+
+createTable().then({
+    // добавить новую запись
+    db('articles').insert({ title: 'title', content: 'content' });
+    // получить все записи таблицы, отсортированные по полю "title"
+    db('articles').orderBy('title');
+    // получить запись по id
+    db('articles').where({ id: 0 }).first();
+    // удалить запись
+    db('articles').del().where({ id: 0 });
+});
+```
+
+#### Безопасные абстрации
+
+Из-за того, что разные БД имеют специфичные элементы синтаксиса, одни и те же абстрации могут работать и не работать от БД к БД. Например:
+
+```javascript
+table.increments('id').primary(); // работает и в Sqlite и в PosgreSQL
+table.integer('id').primaery(); // работает в Sqlite, но не работает в PosgreSQL
+```
+
+#### Различия MySQL и PosgreSQL
+
+- PostgreSQL поддерживает сложные типы данных: массивы, JSON, пользовательские типы;
+
+- PosgreSQL поддерживает полнотекстовый поиск;
+
+- В PosgreSQL строгое соответствие стандарту ANSI SQL:2008;
+
+- Репликация в MySQL мощнее;
+
+- Сообщество MySQL больше, больше и самих инструментов;
+
+- У MySQL есть дефрагментация на ветви: MySQL, MariaDB, WebScaleSQL и т.д.;
+
+- Быстродействие при масштабировании в обеих БД зависит от множества факторов - проверять нужно на практике.
